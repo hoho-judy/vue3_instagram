@@ -1,0 +1,23 @@
+axios 사용 방법
+
+1. npm install axios로 설치
+또는 yarn add axios 
+
+2. 사용하려는 뷰 컴포넌트에 import axios from 'axios' 추가
+
+3. axios로 데이터 가져오기(get)
+axios.get({URL})
+.then((response)=>{
+    // 데이터 가져오기 성공했을 때 로직
+}).catch((err)=>{
+    // 에러메시지 담은 문자열이 돌아오고, 실패했을 때 처리 로직
+})
+
+4. axios로 데이터 전송하기(post)
+// 전송 url, 데이터를 post()안에 파라미터로 전달
+axios.post({URL}, {name: 'Kim'})
+.then((response)=>{
+    // 데이터 전송 성공했을 때 로직
+}).catch((err)=>{
+    // 에러메시지 담은 문자열이 돌아오고, 실패했을 때 처리 로직
+})
