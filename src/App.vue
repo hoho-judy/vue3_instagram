@@ -4,23 +4,39 @@
       <li>Cancel</li>
     </ul>
     <ul class="header-button-right">
-      <li>Next</li>
+      <li v-if="step == 1" @click="next">Next</li>
+      <li v-if="step == 2" @click="publish">발행</li>
     </ul>
     <img src="./assets/logo.png" class="logo" />
   </div>
 
-  <Container :posts="posts" />
-
-  <button @click="viewMore">
-    더보기
-  </button>
+  <Container :posts="posts" :step="step" :url="url"/>
+  
+  <div v-if="step == 0" class="more-button">
+    <button @click="viewMore">
+      더보기
+    </button> 
+  </div>
 
   <div class="footer">
     <ul class="footer-button-plus">
-      <input type="file" id="file" class="inputfile" />
+      <!-- input type file로 할 때 여러개 파일을 올리려면 multiple 속성을 축가. 없으면 기본 1개만 업로드 -->
+      <!-- <input @change="upload" multiple accept="image" type="file" id="file" class="inputfile" />  -->
+      <input @change="upload" type="file" id="file" class="inputfile" /> <!-- 파일업로드할 인풋 -->
       <label for="file" class="input-plus">+</label>
     </ul>
   </div>
+
+  <!-- 탭ui 뼈대 -->
+  <!-- 
+  <div v-if="step == 0">내용0</div>
+  <div v-if="step == 1">내용1</div>
+  <div v-if="step == 2">내용2</div>
+  <button @click="step = 0">버튼0</button>
+  <button @click="step = 1">버튼1</button>
+  <button @click="step = 2">버튼2</button> -->
+  
+
 </template>
 
 <script>
@@ -34,9 +50,12 @@ export default {
     return {
       posts: datas,
       moreCnt: 0,
+      step: 0,
+      url : '',
     };
   },
   methods: {
+    // 더보기 버튼 클릭
     viewMore() {
       axios.get(`https://codingapple1.github.io/vue/more${this.moreCnt}.json`)
       .then((res)=>{
@@ -47,6 +66,31 @@ export default {
         console.log(err);
       })
     },
+    // 파일업로드
+    upload(e) {
+      let files = e.target.files;
+      console.log(files);
+      this.url = URL.createObjectURL(files[0]);
+      this.step++;
+    },
+    next() {
+      this.step++;
+    },
+    publish() {
+      // 입력한 내용을 오브젝트로 만들어서 posts에 unshift해서 맨 앞에 끼워넣기
+      let myPost = {
+        name: "judy",
+        userImage: "https://picsum.photos/100?random=3",
+        postImage: "https://picsum.photos/600?random=3",
+        likes: 0,
+        date: "July 31",
+        liked: false,
+        content: '',
+        filter: "perpetua"
+      };
+      this.posts.unshift(myPost);
+      this.step = 0; // 메인 페이지로 돌아오기
+    },
   },
   components: {
     Container: Container,
@@ -55,15 +99,6 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
 body {
   margin: 0;
 }
@@ -128,6 +163,12 @@ ul {
 }
 .input-plus {
   cursor: pointer;
+}
+.more-button{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 #app {
   box-sizing: border-box;
