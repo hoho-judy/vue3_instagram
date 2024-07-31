@@ -10,7 +10,7 @@
     <img src="./assets/logo.png" class="logo" />
   </div>
 
-  <Container :posts="posts" :step="step" :url="url"/>
+  <Container :posts="posts" :step="step" :url="url" :item="item" @write="item.content = $event"/>
   
   <div v-if="step == 0" class="more-button">
     <button @click="viewMore">
@@ -35,7 +35,6 @@
   <button @click="step = 0">버튼0</button>
   <button @click="step = 1">버튼1</button>
   <button @click="step = 2">버튼2</button> -->
-  
 
 </template>
 
@@ -52,6 +51,7 @@ export default {
       moreCnt: 0,
       step: 0,
       url : '',
+      item: {},
     };
   },
   methods: {
@@ -81,11 +81,11 @@ export default {
       let myPost = {
         name: "judy",
         userImage: "https://picsum.photos/100?random=3",
-        postImage: "https://picsum.photos/600?random=3",
+        postImage: this.url,
         likes: 0,
         date: "July 31",
         liked: false,
-        content: '',
+        content: this.item.content,
         filter: "perpetua"
       };
       this.posts.unshift(myPost);
