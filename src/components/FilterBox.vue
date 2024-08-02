@@ -1,5 +1,5 @@
 <template>
-  <div :class="`${filter} filter-item`" :style="`background-image: url(${url})`"> 
+  <div :class="`${filter} filter-item`" :style="`background-image: url(${url})`" @click="setFilter"> 
     <slot></slot> <!-- 부모가 보낸 데이터를 자식이 사용하는 방법 slot : 빵꾸뚫기-->
     <!-- 구멍 여러개 뚫고 싶을 때 -->
     <!-- <slot :name="a"></slot> 
@@ -13,9 +13,15 @@
 <script>
 export default {
     name: 'filterBox',
+    methods: {
+      setFilter() {
+        console.log(" 셋필터 들어옴");
+        this.emitter.emit('setFilter', this.filter);
+      },
+    },
     props : {
-        url: String,
-        filter: String,
+      url: String,
+      filter: String,
     }
 }
 </script>

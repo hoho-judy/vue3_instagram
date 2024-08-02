@@ -9,20 +9,41 @@
     </ul>
     <img src="./assets/logo.png" class="logo" />
   </div>
-
-  <Container :posts="posts" :step="step" :url="url" :item="item" @write="item.content = $event"/>
   
+  <!-- <h4>안녕 {{ $store.state.name }}</h4>
+  <p>나이 : {{ $store.state.age }}</p> -->
+
+  <!-- store.js에 정의된 함수 호출 -->
+  <!-- <button @click="$store.commit('plusAge', 10)">버튼</button>  -->
+  <!-- <button @click="doLike(10)">버튼</button>  -->
+  <p>{{ $store.state.more }}</p>
+  <button @click="$store.dispatch('getData')">더보기버튼</button>
+  
+  <p>{{ myName }} {{age}} {{likes}} </p>
+
+  <Container
+    :posts="posts"
+    :step="step"
+    :url="url"
+    :item="item"
+    @write="item.content = $event"
+  />
+
+  <!-- 컴퓨티드 함수는 함수명만 표기 -->
+  <!-- methods 함수는 함수명() 표기 -->
+  <!-- <p>{{ now2 }} {{ count }}</p>
+  <button @click="count++">버튼</button> -->
+
   <div v-if="step == 0" class="more-button">
-    <button @click="viewMore">
-      더보기
-    </button> 
+    <button @click="viewMore">더보기</button>
   </div>
 
   <div class="footer">
     <ul class="footer-button-plus">
       <!-- input type file로 할 때 여러개 파일을 올리려면 multiple 속성을 축가. 없으면 기본 1개만 업로드 -->
       <!-- <input @change="upload" multiple accept="image" type="file" id="file" class="inputfile" />  -->
-      <input @change="upload" type="file" id="file" class="inputfile" /> <!-- 파일업로드할 인풋 -->
+      <input @change="upload" type="file" id="file" class="inputfile" />
+      <!-- 파일업로드할 인풋 -->
       <label for="file" class="input-plus">+</label>
     </ul>
   </div>
@@ -35,13 +56,13 @@
   <button @click="step = 0">버튼0</button>
   <button @click="step = 1">버튼1</button>
   <button @click="step = 2">버튼2</button> -->
-
 </template>
 
 <script>
 import Container from "./components/Container.vue";
 import datas from "./assets/data.js";
 import axios from "axios";
+import { mapMutations, mapState } from 'vuex';
 
 export default {
   name: "App",
@@ -50,21 +71,31 @@ export default {
       posts: datas,
       moreCnt: 0,
       step: 0,
-      url : '',
+      url: "",
       item: {},
+      filter: "",
+      count: 0,
     };
+  },
+  mounted() {
+    // 자식이 보낸 emitter 수신
+    this.emitter.on("setFilter", (e) => {
+      console.log(`app.vue mounted : ${e}`);
+      this.filter = e;
+    });
   },
   methods: {
     // 더보기 버튼 클릭
     viewMore() {
-      axios.get(`https://codingapple1.github.io/vue/more${this.moreCnt}.json`)
-      .then((res)=>{
-        this.posts.push(res.data);
-        this.moreCnt++;
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
+      axios
+        .get(`https://codingapple1.github.io/vue/more${this.moreCnt}.json`)
+        .then((res) => {
+          this.posts.push(res.data);
+          this.moreCnt++;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     // 파일업로드
     upload(e) {
@@ -76,8 +107,9 @@ export default {
     next() {
       this.step++;
     },
+
+    // 입력한 내용을 오브젝트로 만들어서 posts에 unshift해서 맨 앞에 끼워넣기
     publish() {
-      // 입력한 내용을 오브젝트로 만들어서 posts에 unshift해서 맨 앞에 끼워넣기
       let myPost = {
         name: "judy",
         userImage: "https://picsum.photos/100?random=3",
@@ -86,14 +118,35 @@ export default {
         date: "July 31",
         liked: false,
         content: this.item.content,
-        filter: "perpetua"
+        filter: this.filter,
       };
+      console.log({myPost});
       this.posts.unshift(myPost);
       this.step = 0; // 메인 페이지로 돌아오기
     },
+    // now() {
+    //   return new Date();
+    // },
+
+    // vuex의 뮤테이션 함수들을 모두 가져오고 싶을 때
+    ...mapMutations(['changeName', 'plusAge','doLike','setMore',]),
   },
   components: {
     Container: Container,
+  },
+ 
+  // 컴퓨티드 vs methods  
+  // methods 안에 정의된 함수는 호출될 때마다 새로 읽는다.
+  // 컴퓨티드 : 처음에만 실행하고 값을 간직하고 있음. ex) 계산된 결과를 최초에만 저장해놓고 계속 쓸 때 유리
+  computed: {
+    // now2() {
+    //   return new Date();
+    // }
+    
+    // 컴퓨티드 여러개 쓰면 쓰나마나니까 ...mapState([]) 로 내가 가져오고 싶은 state를 모두 가져온다.
+    ...mapState(['name', 'age', 'likes', 'isLiked', 'more']),
+    ...mapState({ myName: 'name', myAge: 'age', }), // 새로운 이름으로 가져다 쓰고 싶을 때 오브젝트 형태로 정의
+    
   },
 };
 </script>
@@ -164,7 +217,7 @@ ul {
 .input-plus {
   cursor: pointer;
 }
-.more-button{
+.more-button {
   display: flex;
   flex-direction: row;
   justify-content: center;
