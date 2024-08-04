@@ -13,4 +13,6 @@ app.config.globalProperties.emitter = emitter;
 // vuex 추가 - app.use(store)... 하면 모든 컴포넌트가 store.js에 접근해서 store.js안에 저장된 state를 사용할 수 있음
 import store from './store.js';
 
+import './registerServiceWorker'
+
 app.use(store).mount('#app')

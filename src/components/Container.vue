@@ -19,18 +19,25 @@
     </div>
 
     <!-- step = 2일때 보일 부분 : 내용 작성 페이지 -->
-    <div v-if="step == 2">
-      <div :class="`${filter} upload-image`" :style="`background-image: url(${url})`"></div>
+  <div v-if="step == 2">
+    <div :class="`${filter} upload-image`" :style="`background-image: url(${url})`"></div>
       <div class="write">
         <textarea @input="$emit('write', $event.target.value)" class="write-box">write!</textarea>
       </div>
     </div>
   </div>
+
+  <!-- step = 3일때 보일 부분 : MyPage--> 
+  <div v-if="step == 3">
+    <MyPage :one="1" :two="2"/>
+  </div>
+
 </template>
 
 <script>
 import Post from "./Post.vue";
 import FilterBox from "./FilterBox.vue";
+import MyPage from './MyPage.vue';
 
 export default {
   name: "containerComponent",
@@ -83,6 +90,7 @@ export default {
   components: {
     Post: Post,
     FilterBox: FilterBox,
+    MyPage,
   },
 };
 </script>

@@ -16,10 +16,11 @@
   <!-- store.js에 정의된 함수 호출 -->
   <!-- <button @click="$store.commit('plusAge', 10)">버튼</button>  -->
   <!-- <button @click="doLike(10)">버튼</button>  -->
+  <!-- 
   <p>{{ $store.state.more }}</p>
   <button @click="$store.dispatch('getData')">더보기버튼</button>
   
-  <p>{{ myName }} {{age}} {{likes}} </p>
+  <p>{{ myName }} {{age}} {{likes}} </p> -->
 
   <Container
     :posts="posts"
@@ -70,7 +71,7 @@ export default {
     return {
       posts: datas,
       moreCnt: 0,
-      step: 0,
+      step: 3,
       url: "",
       item: {},
       filter: "",
